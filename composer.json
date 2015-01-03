@@ -7,6 +7,7 @@
   },
   "require": {
     "symfony/dependency-injection": "~2.6",
+    "symfony/routing": "~2.6",
     "symfony/form": "~2.6",
     "symfony/http-foundation": "~2.6",
     "symfony/templating": "~2.6",
