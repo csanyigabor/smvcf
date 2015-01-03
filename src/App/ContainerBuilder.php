@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\SessionCsrfProvider;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RequestContext;
@@ -32,7 +33,8 @@ class ContainerBuilder
             'templating',
             'requestStack',
             'session',
-            'formFactory'
+            'validator',
+            'formFactory',
         ];
 
         foreach ($services as $service) {
@@ -104,6 +106,22 @@ class ContainerBuilder
             );
     }
 
+    protected function buildValidator(ContainerInterface $container, Kernel $kernel)
+    {
+        $container
+            ->register(
+                'validator',
+                'Symfony\Component\Validator\ValidatorInterface'
+            )
+            ->setFactory(
+                [
+                    'Symfony\Component\Validator\Validation',
+                    'createValidator'
+                ]
+            )
+        ;
+    }
+
     protected function buildFormFactory(ContainerInterface $container, Kernel $kernel)
     {
         $csrfProvider = new SessionCsrfProvider(
@@ -114,9 +132,12 @@ class ContainerBuilder
 
         $httpExtension = new HttpFoundationExtension();
 
+
         $formFactoryBuilder = Forms::createFormFactoryBuilder()
             ->addExtension($csrfExtension)
-            ->addExtension($httpExtension);
+            ->addExtension($httpExtension)
+            ->addExtension(new ValidatorExtension($container->get('validator')))
+        ;
 
         $container
             ->register(
