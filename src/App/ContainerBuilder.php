@@ -6,6 +6,9 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder as DIContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Form\Extension\Csrf\CsrfExtension;
+use Symfony\Component\Form\Extension\Csrf\CsrfProvider\SessionCsrfProvider;
+use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Templating\Helper\SlotsHelper;
@@ -23,7 +26,13 @@ class ContainerBuilder
     {
         $this->container = new DIContainerBuilder();
 
-        $services = ['router', 'templating', 'requestStack'];
+        $services = [
+            'router',
+            'templating',
+            'requestStack',
+            'session',
+            'formFactory'
+        ];
 
         foreach ($services as $service) {
             call_user_func(
@@ -83,5 +92,34 @@ class ContainerBuilder
                 'request_stack',
                 'Symfony\Component\HttpFoundation\RequestStack'
             );
+    }
+
+    protected function buildSession(ContainerInterface $container, Kernel $kernel)
+    {
+        $container
+            ->register(
+                'session',
+                'Symfony\Component\HttpFoundation\Session\Session'
+            );
+    }
+
+    protected function buildFormFactory(ContainerInterface $container, Kernel $kernel)
+    {
+        $csrfProvider = new SessionCsrfProvider(
+            $container->get('session'),
+            'some_csrf_secret'
+        );
+        $csrfExtension = new CsrfExtension($csrfProvider);
+
+        $httpExtension = new HttpFoundationExtension();
+
+        $container
+            ->register(
+                'form_factory',
+                'Symfony\Component\HttpFoundation\Session\Session'
+            )
+            -addMethodCall('addExtension', $csrfExtension)
+            -addMethodCall('addExtension', $httpExtension)
+        ;
     }
 }
