@@ -3,6 +3,7 @@
 namespace WND\SMVCF\Http;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class Controller
@@ -50,5 +51,18 @@ abstract class Controller
     protected function render($template, array $params = [])
     {
         return new Response($this->renderView($template, $params));
+    }
+
+    /**
+     * @param string $route
+     * @param array $params
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    protected function redirect($route, array $params = [])
+    {
+        return new RedirectResponse(
+            $this->get('router')->generate($route, $params)
+        );
     }
 }
