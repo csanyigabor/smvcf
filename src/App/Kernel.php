@@ -45,6 +45,11 @@ class Kernel
         return $this->rootDir;
     }
 
+    public function getSrcDir()
+    {
+        return implode(DIRECTORY_SEPARATOR, [$this->getRootDir(), 'src']);
+    }
+
     /**
      * @return string
      */
@@ -70,7 +75,7 @@ class Kernel
     {
         list($controllerClass, $actionMethod) = $this->resolvePath($request);
 
-        $controller = new $controllerClass();
+        $controller = new $controllerClass($this->container);
         $response = call_user_func([$controller, $actionMethod]);
 
         return $response;
