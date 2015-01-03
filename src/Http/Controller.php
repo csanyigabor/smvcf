@@ -3,6 +3,7 @@
 namespace WND\SMVCF\Http;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -64,5 +65,15 @@ abstract class Controller
         return new RedirectResponse(
             $this->get('router')->generate($route, $params)
         );
+    }
+
+    /**
+     * @param \Symfony\Component\Form\FormTypeInterface $type
+     *
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    protected function createForm(FormTypeInterface $type)
+    {
+        return $this->get('form_factory')->create($type);
     }
 }
