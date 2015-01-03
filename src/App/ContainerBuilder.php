@@ -5,6 +5,7 @@ namespace WND\SMVCF\App;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder as DIContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Templating\Helper\SlotsHelper;
@@ -46,7 +47,9 @@ class ContainerBuilder
         $locator = new FileLocator($kernel->getConfigDir());
         $loader = new YamlFileLoader($locator);
 
-        $requestContext = new RequestContext($_SERVER['REQUEST_URI']);
+        $requestContext = new RequestContext(
+            str_replace($_SERVER['PATH_INFO'], '', $_SERVER['REQUEST_URI'])
+        );
 
         $container
             ->register('router', 'Symfony\Component\Routing\Router')
@@ -69,6 +72,7 @@ class ContainerBuilder
             ->addArgument($nameParser)
             ->addArgument($loader)
             ->addMethodCall('set', [new SlotsHelper()])
+            ->addMethodCall('addGlobal', ['router', new Reference('router')])
         ;
     }
 }
