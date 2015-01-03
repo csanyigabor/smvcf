@@ -7,6 +7,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder as DIContainerBuilder
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Templating\Helper\SlotsHelper;
+use Symfony\Component\Templating\Loader\FilesystemLoader;
+use Symfony\Component\Templating\TemplateNameParser;
 
 class ContainerBuilder
 {
@@ -19,7 +22,9 @@ class ContainerBuilder
     {
         $this->container = new DIContainerBuilder();
 
-        foreach (['router'] as $service) {
+        $services = ['router', 'templating'];
+
+        foreach ($services as $service) {
             call_user_func(
                 [$this, sprintf('build%s', ucfirst($service))],
                 $this->container,
@@ -48,6 +53,22 @@ class ContainerBuilder
             ->addArgument($loader)
             ->addArgument('routing.yml')
             ->addArgument([])
-            ->addArgument($requestContext);
+            ->addArgument($requestContext)
+        ;
+    }
+
+    protected function buildTemplating(ContainerInterface $container, Kernel $kernel)
+    {
+        $nameParser = new TemplateNameParser();
+        $loader = new FilesystemLoader(
+            $kernel->getSrcDir() . DIRECTORY_SEPARATOR . '%name%'
+        );
+
+        $container
+            ->register('templating', 'Symfony\Component\Templating\PhpEngine')
+            ->addArgument($nameParser)
+            ->addArgument($loader)
+            ->addMethodCall('set', [new SlotsHelper()])
+        ;
     }
 }
