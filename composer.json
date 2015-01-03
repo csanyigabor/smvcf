@@ -1,0 +1,8 @@
+{
+  "name": "wnd/smvcf",
+  "description": "Simple mvc framework",
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4" : {"WND\\SMVCF\\" : "src/"}
+  }
+}
