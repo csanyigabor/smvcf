@@ -73,6 +73,9 @@ class Kernel
      */
     public function process(Request $request)
     {
+        // adding current request to the request stack
+        $this->container->get('request_stack')->push($request);
+
         list($controllerClass, $actionMethod) = $this->resolvePath($request);
 
         $controller = new $controllerClass($this->container);

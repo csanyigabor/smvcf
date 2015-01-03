@@ -23,7 +23,7 @@ class ContainerBuilder
     {
         $this->container = new DIContainerBuilder();
 
-        $services = ['router', 'templating'];
+        $services = ['router', 'templating', 'requestStack'];
 
         foreach ($services as $service) {
             call_user_func(
@@ -74,5 +74,14 @@ class ContainerBuilder
             ->addMethodCall('set', [new SlotsHelper()])
             ->addMethodCall('addGlobal', ['router', new Reference('router')])
         ;
+    }
+
+    protected function buildRequestStack(ContainerInterface $container, Kernel $kernel)
+    {
+        $container
+            ->register(
+                'request_stack',
+                'Symfony\Component\HttpFoundation\RequestStack'
+            );
     }
 }
