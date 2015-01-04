@@ -12,10 +12,12 @@ use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader as DIYamlFileLoader;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Templating\Helper\SlotsHelper;
 use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\TemplateNameParser;
+use WND\SMVCF\DependencyInjection as DIExtension;
 
 class ContainerBuilder
 {
@@ -27,6 +29,17 @@ class ContainerBuilder
     public function __construct(Kernel $kernel)
     {
         $this->container = new DIContainerBuilder();
+        $this->container->setParameter('config_dir', $kernel->getConfigDir());
+        $this->container->setParameter('cache_dir', $kernel->getCacheDir());
+        $this->container->setParameter('root_dir', $kernel->getRootDir());
+        $this->container->setParameter('src_dir', $kernel->getSrcDir());
+
+        $this->container->registerExtension(new DIExtension\DoctrineExtension());
+        $this->container->registerExtension(new DIExtension\CsrfExtension());
+
+        $locator = new FileLocator($kernel->getConfigDir());
+        $configLoader = new DIYamlFileLoader($this->container, $locator);
+        $configLoader->load('config.yml');
 
         $services = [
             'router',
@@ -44,6 +57,8 @@ class ContainerBuilder
                 $kernel
             );
         }
+
+        $this->container->compile();
     }
 
     /**
