@@ -69,11 +69,12 @@ abstract class Controller
 
     /**
      * @param \Symfony\Component\Form\FormTypeInterface $type
+     * @param mixed $data
      *
      * @return \Symfony\Component\Form\FormInterface
      */
-    protected function createForm(FormTypeInterface $type)
+    protected function createForm(FormTypeInterface $type, $data)
     {
-        return $this->get('form_factory')->create($type);
+        return $this->get('form_factory')->create($type, $data);
     }
 }
