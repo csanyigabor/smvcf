@@ -91,7 +91,7 @@ class ContainerBuilder
     {
         $nameParser = new TemplateNameParser();
         $loader = new FilesystemLoader(
-            $kernel->getSrcDir() . DIRECTORY_SEPARATOR . '%name%'
+            $kernel->getSrcDir().DIRECTORY_SEPARATOR.'%name%'
         );
 
         $container
@@ -131,7 +131,7 @@ class ContainerBuilder
             ->setFactory(
                 [
                     'Symfony\Component\Validator\Validation',
-                    'createValidator'
+                    'createValidator',
                 ]
             )
         ;
@@ -147,7 +147,6 @@ class ContainerBuilder
 
         $httpExtension = new HttpFoundationExtension();
 
-
         $formFactoryBuilder = Forms::createFormFactoryBuilder()
             ->addExtension($csrfExtension)
             ->addExtension($httpExtension)
@@ -162,7 +161,7 @@ class ContainerBuilder
             ->setFactory(
                 [
                     $formFactoryBuilder,
-                    'getFormFactory'
+                    'getFormFactory',
                 ]
             )
         ;

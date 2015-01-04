@@ -34,7 +34,7 @@ abstract class Controller
 
     /**
      * @param string $template
-     * @param array $params
+     * @param array  $params
      *
      * @return string
      */
@@ -45,7 +45,7 @@ abstract class Controller
 
     /**
      * @param string $template
-     * @param array $params
+     * @param array  $params
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -56,7 +56,7 @@ abstract class Controller
 
     /**
      * @param string $route
-     * @param array $params
+     * @param array  $params
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -69,7 +69,7 @@ abstract class Controller
 
     /**
      * @param \Symfony\Component\Form\FormTypeInterface $type
-     * @param mixed $data
+     * @param mixed                                     $data
      *
      * @return \Symfony\Component\Form\FormInterface
      */

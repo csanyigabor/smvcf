@@ -39,7 +39,7 @@ class Kernel
                 dirname($r->getFileName())
             );
 
-            $this->rootDir = realpath($this->rootDir . DIRECTORY_SEPARATOR . '..');
+            $this->rootDir = realpath($this->rootDir.DIRECTORY_SEPARATOR.'..');
         }
 
         return $this->rootDir;
